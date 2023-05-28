@@ -1,23 +1,17 @@
 from fastapi import FastAPI, HTTPException
-
+from schema import Book
+from starlette import status
 app = FastAPI()
 
-books = [
-    {"title": "Title One", "author": "Author One", "category": "Data Science"},
-    {"title": "Title Two", "author": "Author Two", "category": "Data Analysis"},
-    {"title": "Title Three", "author": "Author One", "category": "Python Developer"},
-    {"title": "Title Four", "author": "Author Two", "category": "Data Science"}
-]
 
-
-@app.get("/books/allbooks")
+@app.get("/books/allbooks", tags=["Book"])
 async def get_all_books():
     if books:
         return books
     return "No book Found"
 
 
-@app.get("/books/{title}")
+@app.get("/books/{title}", tags=["Book"])
 async def get_books_by_title(title: str):
     res = []
     for book in books:
@@ -28,16 +22,16 @@ async def get_books_by_title(title: str):
     raise HTTPException(status_code=404, detail=f"Book not found with {title}")
 
 
-@app.post("/books/add_book")
-async def add_books(req: dict):
+@app.post("/books/add_book", status_code=status.HTTP_201_CREATED, tags=["Book"])
+async def add_books(req: Book):
     if req:
         books.append(req)
-        return books
+
     else:
         raise HTTPException(status_code=401, detail="Enter correct books details")
 
 
-@app.patch("/books/{title}/update_category")
+@app.patch("/books/{title}/update_category", tags=["Book"])
 async def update_category_book_by_title(title: str, req: dict):
     for book in books:
         if book["title"] == title:
@@ -47,7 +41,7 @@ async def update_category_book_by_title(title: str, req: dict):
         raise HTTPException(status_code=404, detail=f"Book with Title:{title} Not Found")
 
 
-@app.put("/books/{title}/update")
+@app.put("/books/{title}/update", tags=["Book"])
 async def update_book_by_title(title: str, req: dict):
     for book in books:
         if book["title"] == title:
@@ -59,7 +53,7 @@ async def update_book_by_title(title: str, req: dict):
         raise HTTPException(status_code=404, detail=f"Book with Title:{title} Not Found")
 
 
-@app.get("/books/")
+@app.get("/books/", tags=["Book"])
 async def get_books_by_category(xyz: str):
     res = []
     for book in books:
@@ -68,3 +62,8 @@ async def get_books_by_category(xyz: str):
     if res:
         return res
     raise HTTPException(status_code=404, detail=f"Book not found with category: {xyz}")
+
+
+@app.post("/e-books/create", tags=["E-Book"])
+async def add_e_book(req: dict):
+    print(req)
