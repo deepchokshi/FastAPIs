@@ -67,3 +67,4 @@ async def get_books_by_category(xyz: str):
 @app.post("/e-books/create", tags=["E-Book"])
 async def add_e_book(req: dict):
     print(req)
+    print(req)
